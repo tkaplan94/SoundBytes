@@ -23,31 +23,104 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <Button
-                android:id="@+id/button_main_play"
+            <TextView
+                android:id="@+id/textview_main_recordTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:text="@string/button_play"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/button_main_stop"
-                app:layout_constraintHorizontal_bias="0.5"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:text="@string/textView_record_title"
+                app:layout_constraintBottom_toTopOf="@+id/button_main_record25"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <Button
-                android:id="@+id/button_main_stop"
+                android:id="@+id/button_main_record1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:text="@string/button_stop"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:onClick="startRecordingSound"
+                android:text="@string/button_record_1"
+                app:layout_constraintBaseline_toBaselineOf="@+id/button_main_record25"
+                app:layout_constraintEnd_toStartOf="@+id/button_main_record25"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <Button
+                android:id="@+id/button_main_record25"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="startRecordingSound"
+                android:text="@string/button_record_25"
+                app:layout_constraintBottom_toTopOf="@+id/progressBar_main_record"
+                app:layout_constraintEnd_toStartOf="@+id/button_main_record100"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/button_main_record1"
+                app:layout_constraintTop_toBottomOf="@+id/textview_main_recordTitle" />
+
+            <Button
+                android:id="@+id/button_main_record100"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="startRecordingSound"
+                android:text="@string/button_record_100"
+                app:layout_constraintBaseline_toBaselineOf="@+id/button_main_record25"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/button_main_play"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintStart_toEndOf="@+id/button_main_record25" />
+
+            <ProgressBar
+                android:id="@+id/progressBar_main_record"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toTopOf="@+id/textView_main_recordUpdate"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/button_main_record25" />
+
+            <TextView
+                android:id="@+id/textView_main_recordUpdate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:text="@string/textView_record_update"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toTopOf="@+id/textView_main_recordCancel"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/progressBar_main_record" />
+
+            <TextView
+                android:id="@+id/textView_main_recordCancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:text="@string/textView_record_cancel"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toTopOf="@+id/button_main_recordCancel"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView_main_recordUpdate" />
+
+            <Button
+                android:id="@+id/button_main_recordCancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:onClick="stopRecordingSound"
+                android:text="@string/button_record_cancel"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView_main_recordCancel" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
 
@@ -67,19 +140,57 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <Button
-                android:id="@+id/button_main_record"
+            <TextView
+                android:id="@+id/textView_main_playTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-                android:text="@string/button_record"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:text="@string/textView_play_title"
+                app:layout_constraintBottom_toTopOf="@+id/button_main_play"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:id="@+id/button_main_play"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:onClick="startPlayingSound"
+                android:text="@string/button_play_start"
+                app:layout_constraintBottom_toTopOf="@+id/progressBar_main_play"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView_main_playTitle" />
+
+            <ProgressBar
+                android:id="@+id/progressBar_main_play"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toTopOf="@+id/button_main_stop"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/button_main_play" />
+
+            <Button
+                android:id="@+id/button_main_stop"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:onClick="stopPlayingSound"
+                android:text="@string/button_play_cancel"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/progressBar_main_play" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
