@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name">Reverb</string>
 
+    <string name="app_name">Sound Bytes</string>
     <string name="textView_record_title">Number of Sound Bytes</string>
     <string name="button_record_1">1</string>
     <string name="button_record_25">25</string>
@@ -8,9 +8,5 @@
     <string name="textView_record_update">Taking Sound Byte</string>
     <string name="textView_record_cancel">Cancelling</string>
     <string name="button_record_cancel">Cancel</string>
-
-    <string name="textView_play_title">High-Frequency Tone</string>
-    <string name="button_play_start">Start</string>
-    <string name="button_play_cancel">Cancel</string>
 
 </resources>

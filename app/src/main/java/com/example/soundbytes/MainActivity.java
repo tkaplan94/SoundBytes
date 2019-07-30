@@ -1,4 +1,4 @@
-package com.example.reverb;
+package com.example.soundbytes;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -10,9 +10,7 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.media.AudioFormat;
-import android.media.AudioManager;
 import android.media.AudioRecord;
-import android.media.AudioTrack;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
@@ -39,7 +37,6 @@ public class MainActivity extends AppCompatActivity {
     private final int RECORD_AUDIO_PERMISSION_CODE = 1;
 
     private Handler mainHandler;
-    private PlaySoundRunnable psRunnable;
     private RecordSoundRunnable rsRunnable;
 
     private ProgressBar pb_record;
@@ -65,16 +62,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      *  Button Functions
      */
-    public void startPlayingSound(View view) {
-        psRunnable = new PlaySoundRunnable();
-        new Thread(psRunnable).start();
-    }
-
-    public void stopPlayingSound(View view) {
-        psRunnable.stopPlayingSound();
-    }
-
-    public void startRecordingSound(View view) {
+    public void startRecordingSamples(View view) {
         /** determine number of samples to take */
         int id = view.getId();
         switch(id)
@@ -100,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void stopRecordingSound(View view) {
+    public void stopRecordingSamples(View view) {
         tv_recordCancel.setVisibility(View.VISIBLE);
         tv_recordUpdate.setVisibility(View.INVISIBLE);
         rsRunnable.stopRecordingSound();
@@ -196,63 +184,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * CLASS: generates a high frequency tone
-     */
-    class PlaySoundRunnable implements Runnable {
-
-        /** VARIABLES */
-        private static final int SAMPLERATE = 8000;
-        private static final int ENCODING = AudioFormat.ENCODING_PCM_16BIT;
-        private static final int PLAYER_DURATION = 105; // seconds
-        private static final double PLAYER_FREQUENCY = 10000; // hz
-
-        private int numSamples = 2 * PLAYER_DURATION * SAMPLERATE;
-        private double[] sample = new double[numSamples];
-        private byte[] generatedSound = new byte[2 * numSamples];
-        private volatile boolean isPlayingSound = true;
-
-        /** CTOR: generates the tone for playback */
-        public PlaySoundRunnable() {
-            // fill out the array
-            for (int i = 0; i < numSamples; ++i) {
-                sample[i] = Math.sin(2 * Math.PI * i / (SAMPLERATE/PLAYER_FREQUENCY));
-            }
-            // convert to 16 bit pcm sound array
-            // assumes the sample buffer is normalised.
-            int idx = 0;
-            for (final double dVal : sample) {
-                // scale to maximum amplitude
-                final short val = (short) ((dVal * 32767));
-                // in 16 bit wav PCM, first byte is the low order byte
-                generatedSound[idx++] = (byte) (val & 0x00ff);
-                generatedSound[idx++] = (byte) ((val & 0xff00) >>> 8);
-            }
-        }
-
-        /** RUN */
-        @Override
-        public void run() {
-            final AudioTrack audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC,
-                    SAMPLERATE, AudioFormat.CHANNEL_OUT_MONO,
-                    ENCODING, numSamples, AudioTrack.MODE_STATIC);
-            audioTrack.write(generatedSound, 0, generatedSound.length);
-            long a = System.currentTimeMillis();    // start time
-            while(isPlayingSound) {
-                audioTrack.play();
-                long b =  System.currentTimeMillis();   // end time
-                if(b - a >= 20000) // 20 secs have passed
-                    break;
-            }
-        }
-
-        /** setter method to stop audio track from playing */
-        private void stopPlayingSound() {
-            isPlayingSound = false;
-        }
-
-    } // END OF PLAY_SOUND_RUNNABLE
-
-    /**
      * CLASS: records audio
      */
     class RecordSoundRunnable implements Runnable {
@@ -289,16 +220,6 @@ public class MainActivity extends AppCompatActivity {
                 public void run() {
                     pb_record.setVisibility(View.VISIBLE);
                     b_recordCancel.setVisibility(View.VISIBLE);
-
-//                    if (m_location == "Inside") {
-//                        m_insideProgress.setVisibility(View.VISIBLE);
-//                        m_insideCancel.setVisibility(View.VISIBLE);
-//                    }
-//                    else if (m_location == "Outside") {
-//                        m_outsideProgress.setVisibility(View.VISIBLE);
-//                        m_outsideCancel.setVisibility(View.VISIBLE);
-//                    }
-
                 }
             });
 
@@ -322,18 +243,6 @@ public class MainActivity extends AppCompatActivity {
                             pb_record.setVisibility(View.INVISIBLE);
                             b_recordCancel.setVisibility(View.INVISIBLE);
                             tv_recordCancel.setVisibility(View.INVISIBLE);
-
-//                            if (m_location == "Inside") {
-//                                m_insideProgress.setVisibility(View.INVISIBLE);
-//                                m_insideCancel.setVisibility(View.INVISIBLE);
-//                                m_insideCancelUpdate.setVisibility(View.INVISIBLE);
-//                            }
-//                            else if (m_location == "Outside") {
-//                                m_outsideProgress.setVisibility(View.INVISIBLE);
-//                                m_outsideCancel.setVisibility(View.INVISIBLE);
-//                                m_outsideCancelUpdate.setVisibility(View.INVISIBLE);
-//                            }
-
                         }
                     });
                     return;
@@ -341,7 +250,7 @@ public class MainActivity extends AppCompatActivity {
 
                 try {
                     /** creates new folders in storage if they do not exist */
-                    File pathParent = new File( Environment.getExternalStoragePublicDirectory("Reverb") + "/");
+                    File pathParent = new File( Environment.getExternalStoragePublicDirectory("Sound Bytes") + "/");
                     if (!pathParent.exists())
                         pathParent.mkdir();
                     File pathChild = new File(pathParent + "/" + m_fileName + "/");
@@ -361,12 +270,6 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             tv_recordUpdate.setVisibility(View.VISIBLE);
-
-//                            if (m_location == "Inside")
-//                                m_insideRecordUpdate.setVisibility(View.VISIBLE);
-//                            else if (m_location == "Outside")
-//                                m_outsideRecordUpdate.setVisibility(View.VISIBLE);
-
                         }
                     });
                     recorder.startRecording();
@@ -389,12 +292,6 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             tv_recordUpdate.setVisibility(View.INVISIBLE);
-
-//                            if (m_location == "Inside")
-//                                m_insideRecordUpdate.setVisibility(View.INVISIBLE);
-//                            else if (m_location == "Outside")
-//                                m_outsideRecordUpdate.setVisibility(View.INVISIBLE);
-
                         }
                     });
                     os.close();
@@ -423,16 +320,6 @@ public class MainActivity extends AppCompatActivity {
                 public void run() {
                     pb_record.setVisibility(View.INVISIBLE);
                     b_recordCancel.setVisibility(View.INVISIBLE);
-
-//                    if (m_location == "Inside") {
-//                        m_insideProgress.setVisibility(View.INVISIBLE);
-//                        m_insideCancel.setVisibility(View.INVISIBLE);
-//                    }
-//                    else if (m_location == "Outside") {
-//                        m_outsideProgress.setVisibility(View.INVISIBLE);
-//                        m_outsideCancel.setVisibility(View.INVISIBLE);
-//                    }
-
                 }
             });
 
