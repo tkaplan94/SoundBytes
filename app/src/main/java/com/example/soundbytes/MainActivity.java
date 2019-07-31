@@ -90,7 +90,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void stopRecordingSamples(View view) {
         tv_recordCancel.setVisibility(View.VISIBLE);
-        tv_recordUpdate.setVisibility(View.INVISIBLE);
         rsRunnable.stopRecordingSound();
     }
 
@@ -102,12 +101,12 @@ public class MainActivity extends AppCompatActivity {
         popUp.setTitle("Start Recording?");
         popUp.setMessage("Enter the file name(s)");
 
-        final EditText input = new EditText(this);
-        popUp.setView(input);
+        final EditText input_name = new EditText(this);
+        popUp.setView(input_name);
 
         popUp.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-                rsRunnable = new RecordSoundRunnable(input.getText().toString());
+                rsRunnable = new RecordSoundRunnable(input_name.getText().toString());
                 new Thread(rsRunnable).start();
                 // disable all buttons
             }
@@ -274,7 +273,7 @@ public class MainActivity extends AppCompatActivity {
                     });
                     recorder.startRecording();
                     long a = System.currentTimeMillis();    // start time
-                    while (isRecording) {
+                    while (true) {
                         recorder.read(soundData, 0, BufferElementsToRec);
                         // writes the data to file from buffer
                         byte bufferData[] = shortToByte(soundData);
@@ -339,9 +338,6 @@ public class MainActivity extends AppCompatActivity {
         /** setter method to change isRecording value to false */
         private void stopRecordingSound() {
             isRecording = false;
-            recorder.stop();
-            recorder.release();
-            recorder = null;
         }
 
         /** converts short to byte */
