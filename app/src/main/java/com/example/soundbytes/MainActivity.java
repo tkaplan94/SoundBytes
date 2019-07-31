@@ -281,7 +281,7 @@ public class MainActivity extends AppCompatActivity {
                         os.write(bufferData, 0, BufferElementsToRec * BytesPerElement);
 
                         long b =  System.currentTimeMillis();   // end time
-                        if(b - a >= 3000) // 3 secs have passed
+                        if(b - a > 3100) // 3 secs have passed
                             break;
                     }
 
