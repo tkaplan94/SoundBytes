@@ -97,27 +97,39 @@ public class MainActivity extends AppCompatActivity {
      *  Confirm to start recording and name files.
      */
     public void openConfirmDialog() {
-        AlertDialog.Builder popUp = new AlertDialog.Builder(this);
-        popUp.setTitle("Start Recording?");
-        popUp.setMessage("Enter the file name(s)");
+        AlertDialog.Builder popUp_folder = new AlertDialog.Builder(this);
+        final EditText input_folder = new EditText(this);
 
-        final EditText input_name = new EditText(this);
-        popUp.setView(input_name);
-
-        popUp.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+        popUp_folder.setTitle("Enter the folder name");
+        popUp_folder.setView(input_folder);
+        popUp_folder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-                rsRunnable = new RecordSoundRunnable(input_name.getText().toString());
-                new Thread(rsRunnable).start();
-                // disable all buttons
+                AlertDialog.Builder popUp_name = new AlertDialog.Builder(MainActivity.this);
+                final EditText input_name = new EditText(MainActivity.this);
+
+                popUp_name.setTitle("Enter the file name(s)");
+                popUp_name.setView(input_name);
+                popUp_name.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        String folder_name = input_folder.getText().toString();
+                        String file_name = input_name.getText().toString();
+
+                        rsRunnable = new RecordSoundRunnable(folder_name, file_name);
+                        new Thread(rsRunnable).start();
+                    }
+                });
+                popUp_name.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                    }
+                });
+                popUp_name.show();
             }
         });
-
-        popUp.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        popUp_folder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
             }
         });
-
-        popUp.show();
+        popUp_folder.show();
     }
 
     /**
@@ -195,12 +207,14 @@ public class MainActivity extends AppCompatActivity {
         private int BufferElementsToRec = 1024;  // want to play 2048 (2K) since 2 bytes we use only 1024
         private int BytesPerElement = 2;        // 2 bytes in 16bit format
 
+        private String m_folderName;
         private String m_fileName;
         private AudioRecord recorder;
         private volatile boolean isRecording;
 
         /** CONSTRUCTOR */
-        RecordSoundRunnable(String fileName) {
+        RecordSoundRunnable(String folderName, String fileName) {
+            this.m_folderName = folderName;
             this.m_fileName = fileName;
             int bufferSize = AudioRecord.getMinBufferSize(
                     RECORDER_SAMPLERATE, RECORDER_CHANNELS, RECORDER_AUDIO_ENCODING);
@@ -252,7 +266,7 @@ public class MainActivity extends AppCompatActivity {
                     File pathParent = new File( Environment.getExternalStoragePublicDirectory("Sound Bytes") + "/");
                     if (!pathParent.exists())
                         pathParent.mkdir();
-                    File pathChild = new File(pathParent + "/" + m_fileName + "/");
+                    File pathChild = new File(pathParent + "/" + m_folderName + "/");
                     if (!pathChild.exists())
                         pathChild.mkdir();
 
