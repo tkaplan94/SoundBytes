@@ -60,7 +60,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     *  Button Functions
+     *  Button Function: startRecordingSamples()
+     *      - determines number of audio samples to take based on which button user clicked
+     *      - checks permissions and requests them if necessary
      */
     public void startRecordingSamples(View view) {
         /** determine number of samples to take */
@@ -78,28 +80,36 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
 
-        // check if permissions are already granted
+        /** check if permissions are already granted */
         if (checkPermissionFromDevice(RECORD_AUDIO_PERMISSION_CODE)) {
             openConfirmDialog();
         }
-        // if permissions aren't granted, request them
+        /** if permissions aren't granted, request them */
         else {
             requestPermissions(RECORD_AUDIO_PERMISSION_CODE);
         }
     }
 
+    /**
+     *  Button Function: stopRecordingSamples()
+     *      - stops recording samples
+     */
     public void stopRecordingSamples(View view) {
         tv_recordCancel.setVisibility(View.VISIBLE);
         rsRunnable.stopRecordingSound();
     }
 
     /**
-     *  Confirm to start recording and name files.
+     *  Confirm Dialog
+     *      - confirm to start recording samples
+     *      - prompts user for folder name, useful for categorizing samples
+     *      - prompts user for file name(s)
      */
     public void openConfirmDialog() {
         AlertDialog.Builder popUp_folder = new AlertDialog.Builder(this);
         final EditText input_folder = new EditText(this);
 
+        /** prompt for folder name */
         popUp_folder.setTitle("Enter the folder name");
         popUp_folder.setView(input_folder);
         popUp_folder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -107,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
                 AlertDialog.Builder popUp_name = new AlertDialog.Builder(MainActivity.this);
                 final EditText input_name = new EditText(MainActivity.this);
 
+                /** prompt for file name(s) */
                 popUp_name.setTitle("Enter the file name(s)");
                 popUp_name.setView(input_name);
                 popUp_name.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
@@ -114,10 +125,12 @@ public class MainActivity extends AppCompatActivity {
                         String folder_name = input_folder.getText().toString();
                         String file_name = input_name.getText().toString();
 
+                        /** open new Runnable thread to capture audio samples */
                         rsRunnable = new RecordSoundRunnable(folder_name, file_name);
                         new Thread(rsRunnable).start();
                     }
                 });
+                /** show the cancel button after Runnable thread is started */
                 popUp_name.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                     }
@@ -134,6 +147,8 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * List of Permission methods
+     *      - need permission to Write To External Storage
+     *      - need permission to Record Audio
      */
     private boolean checkPermissionFromDevice(int permissions) {
 
@@ -195,7 +210,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * CLASS: records audio
+     * Runnable thread: RecordSoundRunnable
+     *      - used to record number of specified audio samples, encoded as lossless WAV
+     *      - 3 second samples recorded
+     *      - 1 second buffer in-between samples
+     *      - makes folder if necessary
+     *      - progress bar indicates recording is taking place
      */
     class RecordSoundRunnable implements Runnable {
 
@@ -366,7 +386,7 @@ public class MainActivity extends AppCompatActivity {
             return bytes;
         }
 
-        /** PCM to WAV */
+        /** PCM to WAV encoding */
         private void rawToWave(final File rawFile, final File waveFile) throws IOException {
 
             byte[] rawData = new byte[(int) rawFile.length()];
